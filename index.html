@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>音符辨識遊戲</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f0f8ff;
+      margin: 0;
+      padding: 20px;
+    }
+    #note-img {
+      width: 200px;
+      margin: 20px auto;
+    }
+    .option {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 24px;
+      font-size: 18px;
+      cursor: pointer;
+      background: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+    }
+    .option:hover {
+      background: #45a049;
+    }
+    #feedback {
+      font-size: 20px;
+      margin-top: 20px;
+    }
+    #score {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎼 音符辨識遊戲</h1>
+  <img id="note-img" src="" alt="Note" />
+  <div id="options"></div>
+  <div id="feedback"></div>
+  <div id="score">分數：0</div>
+
+  <script>
+    const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+    let score = 0;
+
+    function getRandomNote() {
+      return notes[Math.floor(Math.random() * notes.length)];
+    }
+
+    function loadNewNote() {
+      const correctNote = getRandomNote();
+      const noteImg = document.getElementById('note-img');
+      noteImg.src = `https://raw.githubusercontent.com/weichihnote/note-recognition-game/main/img/${correctNote}.png`; // 改為你的 GitHub 圖片網址
+
+      const options = new Set([correctNote]);
+      while (options.size < 3) {
+        options.add(getRandomNote());
+      }
+
+      const optionArray = [...options].sort(() => Math.random() - 0.5);
+      const optionDiv = document.getElementById('options');
+      optionDiv.innerHTML = '';
+
+      optionArray.forEach(note => {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.textContent = note;
+        btn.onclick = () => {
+          if (note === correctNote) {
+            document.getElementById('feedback').textContent = '✅ 答對了！';
+            score++;
+          } else {
+            document.getElementById('feedback').textContent = `❌ 錯了，是 ${correctNote}`;
+            score = 0;
+          }
+          document.getElementById('score').textContent = `分數：${score}`;
+          setTimeout(loadNewNote, 1000);
+        };
+        optionDiv.appendChild(btn);
+      });
+    }
+
+    window.onload = loadNewNote;
+  </script>
+</body>
+</html>
